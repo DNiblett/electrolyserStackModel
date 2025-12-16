@@ -5,3 +5,5 @@ A dynamic lumped model of an electrolyser stack (PEM and Alkaline) allowing pred
 3. To change stack starting temperature, external air temperature etc go to lines 210 - 213.
 1. To run only change simulation settings between 37 - 61.
 2. Plotting of figures lines 620 +
+
+![Alt text](url-of-image "optional image title")
