@@ -6,4 +6,4 @@ A dynamic lumped model of an electrolyser stack (PEM and Alkaline) allowing pred
 1. To run only change simulation settings between 37 - 61.
 2. Plotting of figures lines 620 +
 
-![Alt text](https://github.com/DNiblett/electrolyserStackModel/blob/main/electrolyserStackModelExample.pdf "optional image title")
+![Alt text](https://github.com/DNiblett/electrolyserStackModel/blob/main/electrolyserStackModelExample.png "optional image title")
