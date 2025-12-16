@@ -7,3 +7,7 @@ A dynamic lumped model of an electrolyser stack (PEM and Alkaline) allowing pred
 2. Plotting of figures lines 620 +
 
 ![Alt text](https://github.com/DNiblett/electrolyserStackModel/blob/main/electrolyserStackModelExample.png "optional image title")
+
+- To run with variable power input, make sim.readExternalPower = 'on'
+- Change the .csv file name in line 57 externalData
+- Make lines 60 and 61 equal the time (s) and power (W) columns respectively
