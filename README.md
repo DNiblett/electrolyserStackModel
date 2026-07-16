@@ -307,22 +307,17 @@ Newcastle University, 2026. GitHub repository.
 
 ## Author
 
-**Dr Daniel Niblett**  
+**Dr Daniel Niblett**, **Dr Majid Rahgoshay**, **Professor Mohamed Mamlouk**
+
 Newcastle University
 
-Developed initially for the EPSRC Ocean Refuel project and subsequently updated for Ocean Refuel and ION-H2.
+Developed initially for the UKRI EPSRC Ocean Refuel project and subsequently updated for Ocean Refuel and EPSRC ION-H2.
 
 ## Contributing
 
 Issues, validation datasets, bug reports, and model improvements are welcome.
 
 Useful contributions include additional electrolyser parameter sets, experimentally calibrated degradation coefficients, alternative gas-hold-up models, improved property correlations, pressure and crossover models, numerical acceleration, and example renewable-power profiles.
-
-## Licence
-
-Add a licence before public release. Common academic options include the MIT Licence, BSD 3-Clause Licence, and GNU General Public Licence v3.0.
-
-Check institutional intellectual-property requirements before selecting a licence, particularly where the model relates to funded research, confidential industrial data, consultancy work, or patentable technology.
 
 ## Disclaimer
 
