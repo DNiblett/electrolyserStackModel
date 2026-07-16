@@ -5,6 +5,9 @@ A zero-dimensional, lumped thermal–electrochemical model for simulating the dy
 The model resolves stack electrochemistry, heat transfer, electrolyte circulation, reservoir temperature, gas hold-up, hydrogen production, balance-of-plant loads, variable electrical power input, and an optional empirical voltage-degradation model.
 
 Authors: Dr Daniel Niblett, Dr Majid Rahgoshay, Professor Mohamed Mamlouk
+
+For more details and questions email: daniel.niblett@newcastle.ac.uk
+
 ## Features
 
 - Alkaline, PEM, and AEM parameter sets
