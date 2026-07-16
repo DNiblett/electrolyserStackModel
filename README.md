@@ -30,15 +30,15 @@ The model represents the electrolyser system using four principal temperatures:
 
 The electrochemical cell voltage is calculated from:
 
-\[
+$$
 V_{\mathrm{cell}} = E_{\mathrm{rev}} + \eta_{\mathrm{anode}} + \eta_{\mathrm{cathode}} + \eta_{\mathrm{ohmic}} + \eta_{\mathrm{bubble}} + \Delta V_{\mathrm{deg}}
-\]
+$$
 
 The stack current density is obtained iteratively so that:
 
-\[
+$$
 P_{\mathrm{input}} = N_{\mathrm{stacks}}N_{\mathrm{cells}}A_{\mathrm{cell}}jV_{\mathrm{cell}}
-\]
+$$
 
 ## Requirements
 
