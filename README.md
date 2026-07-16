@@ -23,7 +23,7 @@ The model resolves stack electrochemistry, heat transfer, electrolyte circulatio
   ## Model overview
 
 <p align="center">
-  <img src="stackModelOutput_1.png" width="700">
+  <img src="stackModelOutput_1.png" width="1200">
 </p>
 
 ## Model Structure
