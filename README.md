@@ -149,33 +149,33 @@ The model estimates gas hold-up using a lumped drift-flux relation and modifies 
 
 The degradation model adds a cumulative cell-voltage penalty:
 
-\[
+$$
 V_{\mathrm{cell,degraded}} = V_{\mathrm{cell,fresh}} + \Delta V_{\mathrm{deg}}
-\]
+$$
 
 The total degradation can include:
 
-\[
+$$
 \Delta V_{\mathrm{deg}} = \Delta V_{\mathrm{steady}} + \Delta V_{\mathrm{low-load}} + \Delta V_{\mathrm{ramp}} + \Delta V_{\mathrm{cycle}}
-\]
+$$
 
 ### Steady degradation
 
-\[
+$$
 \dot V_{\mathrm{steady}} = r_{\mathrm{ref}}\left(\frac{j}{j_{\mathrm{rated}}}\right)^m
-\]
+$$
 
 ### Ramp degradation
 
-\[
+$$
 \Delta V_{\mathrm{ramp}} = k_{\mathrm{ramp}}\max\left(\frac{|j-j_{\mathrm{previous}}|}{j_{\mathrm{rated}}}-\epsilon_{\mathrm{ramp}},0\right)
-\]
+$$
 
 ### Start-stop degradation
 
-\[
+$$
 \Delta V_{\mathrm{cycle}} = N_{\mathrm{start}}\Delta V_{\mathrm{start}} + N_{\mathrm{stop}}\Delta V_{\mathrm{stop}}
-\]
+$$
 
 The degradation model is empirical and intended for comparing operating strategies, renewable-following profiles, relative lifetime impacts, and system-level techno-economic studies. It should not currently be interpreted as a mechanistic prediction of catalyst dissolution, membrane thinning, passivation, corrosion, or PTL oxidation.
 
