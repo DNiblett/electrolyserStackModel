@@ -19,6 +19,13 @@ The model resolves stack electrochemistry, heat transfer, electrolyte circulatio
 - Stack start-up, shutdown, heater, cooling, and reservoir refill logic
 - Optional current-history-dependent degradation model
 
+
+  ## Model overview
+
+<p align="center">
+  <img src="figures/stackModelOutput_1.png" width="700">
+</p>
+
 ## Model Structure
 
 The model represents the electrolyser system using four principal temperatures:
