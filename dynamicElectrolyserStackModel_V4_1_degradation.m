@@ -47,8 +47,9 @@ clearvars -except timeLoop PowerLoop timeLoopSave;
 % ======== START - Standard Settings to Change for Renewable Energy Integration ========= %
 
 sim.electrolyserType = 'PEM';      % Electrolyser type: 'Alkaline', 'PEM', or 'AEM'
-N_stacks = 55*14;                      % Number of stacks
-Power = 960*1e6;                       % Operating power if constant current
+N_stacks = 55*8;                    % Number of stacks
+N_Turbine= 64 ;                     % Number of Turbine
+Power = N_Turbine*15*1e6;                       % Operating power if constant current
 T_set = 55 + 273;                  % Desired operating temperature of stack [K]
 sim.feedbackLoop = 'on';           % (on) to control the inlet electrolyte/water temperature with feedback loop
 sim.minLoadClipping = 'on';        % (on) to clip the power to the electrolyser by the minimum load
@@ -58,7 +59,7 @@ sim.endTime = 60*60*24*1;           % Limit for the simulation time.
 sim.writeTime = 10;                % Resolution of the simulation timescale
 sim.isothermal = 'off';            % If isothermal, simulation ignores temperature dynamics
 degradation.active = 'on';         % Turn on if degradation model active.
-externalPowerFile = 'Wind_power_2020_AR1_1s.mat'; % External file with power data (time|power [W])
+externalPowerFile = 'Wind_power_2020_AR1_1s_nofluc.mat'; % External file with power data (time|power [W])
 plotting.figureScale = 'days';    % What scale to plot figures. 'min' 's' 'hours' 'days'
 
 if strcmpi(sim.readExternalPower,'on')
@@ -67,6 +68,31 @@ if strcmpi(sim.readExternalPower,'on')
     sim.endTime = 60 * 60 * 24 * 30;
      sim.endTime = 60 * 60 * 24*365;
 end
+
+
+% ======== TUBINE MODEL and  Loss Factor  apllied on power reduction   MR
+
+L_wake  =	0.09;  % Wake Loss	
+L_elec  =	0.04;  % Electrical Loss	
+L_avail =	0.12; % Turbine Availability	
+L_env   =	0.015;  % Environmental Loss   ---> CF_net=0.4821
+L_TUR_all= (1-L_wake)*(1-L_elec)*(1-L_avail)*(1-L_env);
+
+% ========   Onsite electrical losses, fraction of net power to H2 
+L_onsite  = 0.05;    %  Onsite Electrical Losses
+f_H2      = 1  ;   % Fraction H2   -> P_bus × f_H2
+P_trans_cool = 4.2;  %[MW] Transformer Cooling Auxiliary Power	
+P_aux_OSS = (P_trans_cool+ 0.25 +0.01*Power*1e-6); % 14.05 [MW] Total OSS Auxiliary Power
+L_aux_OSS = P_aux_OSS/(Power*1e-6);  % 14.05/960=1.464 [%]  Total OSS Auxiliary Power
+Eta_DC = 0.985; % 0.985 (both technologies)
+if string(sim.electrolyserType) == 'Alkaline'
+f_BoP_El = 0.07;  % BoP Fraction 7% Alkaline; 5% PEM
+else
+f_BoP_El = 0.05;  % BoP Fraction 7% Alkaline; 5% PEM
+end
+L_SITE = (1-L_onsite)*f_H2*(1-L_aux_OSS)*Eta_DC*(1-f_BoP_El);
+
+L_TUR_SITE_all= L_TUR_all*L_SITE;
 
 % ======== END - Standard Settings to Change for Renewable Energy Integration ========= %
 
@@ -119,7 +145,7 @@ if strcmpi(sim.readExternalPower,'on')
     powerData_Time  = double(externalData.time_s);       % [s]
     %powerData_Power = externalData(:,3).*1e6;  % [W]
     %powerData_Power = double((externalData.power_MW./max(externalData.power_MW)).*2300);  % [W]
-    powerData_Power = double((externalData.power_MW)).*1e6.*(960/15);  % [W]
+    powerData_Power = double((externalData.power_MW)).*N_Turbine.*L_TUR_SITE_all.*1e6;  % [W]
 
 end
 
@@ -254,7 +280,7 @@ anode.b = 45/2303;     % [V]
         degradation.highCurrentReference = 3.0e4;
         degradation.highCurrentExtraRate = ...
             45e-6/3600;
-        stack.BOPutilisation = (1/0.985)*0.07*stack.ratedCapacity; % fraction of rated power used by stack 7% for Alkaline and 5% for PEM
+        stack.BOPutilisation = 0*stack.ratedCapacity; % fraction of rated power used by stack 7% for Alkaline and 5% for PEM
 
 end
 
@@ -318,7 +344,7 @@ anode.b = 40/2303;          % [V]
         degradation.highCurrentReference = 3.0e4;
         degradation.highCurrentExtraRate = ...
             45e-6/3600;
-   stack.BOPutilisation = (1/0.985)*0.05*stack.ratedCapacity; % fraction of rated power used by stack 7% for Alkaline and 5% for PEM
+   stack.BOPutilisation = 0*stack.ratedCapacity; % fraction of rated power used by stack 7% for Alkaline and 5% for PEM
 
 end
 
@@ -364,7 +390,7 @@ anode.b = 70/2303;     % [V]
         degradation.lowLoadLimit     = 0.10;         % PEM tolerates lower loads
         degradation.onLimit          = 0.01;
         degradation.rampDeadband     = 1e-3;
-         stack.BOPutilisation = (1/0.985)*0.05*stack.ratedCapacity; % fraction of rated power used by stack 7% for Alkaline and 5% for PEM
+         stack.BOPutilisation = 0*stack.ratedCapacity; % fraction of rated power used by stack 7% for Alkaline and 5% for PEM
 
 end
 
@@ -1286,18 +1312,21 @@ end
 
 result = result(any(result,2),:);
 metrics = metrics(any(metrics,2),:);
-%%
+%% DISPLAY
 
 totalTime = (result(end,1)./3600) %h % 
 h2perS = h2ProductionCumulative(end)./(result(end,1)); %kg/s
 h2perY = h2perS.*3600.*24.*365; %kg/year
-CF= (totalPower./1e6 ./3600)/(Power*(totalTime)*1e-6)
+PowerTurbine = cumsum(powerValue)/L_SITE; 
+totalPowerTurbine = PowerTurbine(powerData(:,1)== result(end,1))./1e6 ./3600;
+CF= (totalPowerTurbine)./(P_orig.*(totalTime).*1e-6)
 
 disp(['Electrolyser Type: ' sim.electrolyserType ', N_stacks: ' num2str(N_stacks)] )
-disp(['Total Power Supplied: ' num2str(totalPower./1e6 ./3600) ' MWh'])
+disp(['Net Total Energy Production (after Tur loss): ' num2str(totalPowerTurbine) ' MWh,' num2str(totalPowerTurbine/8760) ' MW'])
+disp(['Total Power Supplied: ' num2str(totalPower./1e6 ./3600) ' MWh,' num2str(totalPower./1e6 ./3600/8760) ' MW'])
 disp(['Capacity Factor: ' num2str(CF) ' (-)'])
 disp(['Total H2 Produced: ' num2str(h2ProductionCumulative(end)) ' kg' ])
-disp(['Total H2 Produced (kg/hr): ' num2str(h2ProductionCumulative(end)/(totalTime)) ' kg/hr' ])
+disp(['H2 Production Rate (kg/hr): ' num2str(h2ProductionCumulative(end)/(totalTime)) ' kg/hr' ])
 disp(['Total H2 Production Rate: ' num2str(h2perY./1000) ' t/year' ])
 disp(['Total Energy Consumption: ' num2str((totalPower./1e3 ./3600)./h2ProductionCumulative(end) ) ' kWh/kg  '])
 timeTaken = toc;
